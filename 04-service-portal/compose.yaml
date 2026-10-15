@@ -1,0 +1,25 @@
+services:
+  jupyter:
+    image: gpu-jupyter:v1
+    command:
+      - jupyter
+      - lab
+      - --ip=0.0.0.0
+      - --port=8888
+      - --no-browser
+      - --allow-root
+      - --ServerApp.root_dir=/workspace
+      - --ServerApp.base_url=/jupyter/
+      - --ServerApp.allow_remote_access=True
+    volumes:
+      - /root/jupyter-work:/workspace:z
+
+  portal:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./html:/usr/share/nginx/html:ro,z
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro,z
+    depends_on:
+      - jupyter
